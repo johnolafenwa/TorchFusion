@@ -1,5 +1,4 @@
-
-#TorchFusion
+# TorchFusion
 
 Training Neural Networks with Torchfusion.
 
@@ -12,16 +11,15 @@ In the first part of this tutorial, you would be introduced to how to train neur
 MNIST is considered the "Hello World" of Deep Learning, rightly so because it is the simplest image recognition task.
 Just in case you are new to Deep Learning, MNIST is a dataset of handwritten digits. Every image is labelled according to the digit
 it represents.
-Below are some examples from the training set
-///
+
 
 The dataset is divided into 60 000 training images and 10 000 test images.
 For more info about MNIST, visit (http://yann.lecun.com/exdb/mnist)
 
-Before you proceed further, ensure you have installed TorchFusion,Pytorch and TorchVision following instructions in the [Intro](Intro)
+Before you proceed further, ensure you have installed TorchFusion,Pytorch and TorchVision following instructions in the [Intro](https://github.com/johnolafenwa/TorchFusion)
 
 
-Fireup your IDE, (I always love PyCharm, Submlime Text is cool too)
+Fireup your IDE, (I always love PyCharm, Sublime Text is cool too)
 
 <h2>Step1: Import required packages</h2>
 <pre>
