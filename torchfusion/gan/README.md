@@ -96,9 +96,9 @@ if __name__ == "__main__":
 Note that, at the save_interval you specify, generated samples are displayed and saved.
 
 More examples are linked below:
-[DCGAN](https://github.com/johnolafenwa/TorchFusion/blob/master/examples/gan/mnist.py)
-[WGAN](https://github.com/johnolafenwa/TorchFusion/blob/master/examples/gan/wgan.py)
-[MNIST-DCGAN](https://github.com/johnolafenwa/TorchFusion/blob/master/examples/gan/mnist-dcgan.py)
+[DCGAN](https://github.com/johnolafenwa/TorchFusion/blob/master/examples/gan/mnist.py) <br>
+[WGAN](https://github.com/johnolafenwa/TorchFusion/blob/master/examples/gan/wgan.py) <br>
+[MNIST-DCGAN](https://github.com/johnolafenwa/TorchFusion/blob/master/examples/gan/mnist-dcgan.py) <br>
 
 
 <h1>Creating a Custom GAN Trainer </h1>
