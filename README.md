@@ -4,7 +4,7 @@ A modern deep learning framework built to accelerate research and development of
 
 Based on PyTorch and fully compatible with pure PyTorch and other pytorch packages, <b>TorchFusion</b> provides a comprehensive extensible training framework
 with trainers that you can easily use to train, evaluate and run inference with your PyTorch models, A GAN framework that greatly simplifies the process of
-experimenting with Generative Adversarial Networks(Goodfellow et al.) with concrete implementations of a number of GAN algorithms, and a number of high level network layers and utilities to help you be more productive in your work.
+experimenting with Generative Adversarial Networks(Goodfellow et al.)[https://arxiv.org/1406.2661] , with concrete implementations of a number of GAN algorithms, and a number of high level network layers and utilities to help you be more productive in your work.
 
 <p>The framework is highly extensible, so you can easily create your own custom trainers for specific purposes.</p>
 
@@ -25,7 +25,7 @@ Future releases of TorchFusion will cut across multiple domains of Deep Learning
 </b>
 
 An <b>AI Commons</b> project <a href="https://commons.specpal.science" >https://commons.specpal.science </a>
-Developed and Maintained by [John Olafenwa](https://twitter.com/johnolafenwa) and [Moses Olafenwa](https://twitter.com/OlafenwaMoses), brothers, creators of [ImageAI]()
+Developed and Maintained by [John Olafenwa](https://twitter.com/johnolafenwa) and [Moses Olafenwa](https://twitter.com/OlafenwaMoses), brothers, creators of [ImageAI](https://github.com/OlafenwaMoses/ImageAI )
 and Authors of [Introduction to Deep Computer Vision](https://john.specpal.science/deepvision)
 
 <hr>
@@ -248,6 +248,28 @@ if __name__ == "__main__":
 See more at [Examples](examples)
 
 
+
+<h3><b><u>Contact Developers</u></b></h3>
+ <p>
+  <br>
+      <b>John Olafenwa</b> <br>
+    <i>Email: </i>    <a style="text-decoration: none;"  href="mailto:johnolafenwa@gmail.com"> johnolafenwa@gmail.com</a> <br>
+      <i>Website: </i>    <a style="text-decoration: none;" target="_blank" href="https://john.specpal.science"> https://john.specpal.science</a> <br>
+      <i>Twitter: </i>    <a style="text-decoration: none;" target="_blank" href="https://twitter.com/johnolafenwa"> @johnolafenwa</a> <br>
+      <i>Medium : </i>    <a style="text-decoration: none;" target="_blank" href="https://medium.com/@johnolafenwa"> @johnolafenwa</a> <br>
+      <i>Facebook : </i>    <a style="text-decoration: none;" href="https://facebook.com/olafenwajohn"> olafenwajohn</a> <br>
+
+<br>
+  <b>Moses Olafenwa</b> <br>
+    <i>Email: </i>    <a style="text-decoration: none;"  href="mailto:guymodscientist@gmail.com"> guymodscientist@gmail.com</a> <br>
+      <i>Website: </i>    <a style="text-decoration: none;" target="_blank" href="https://moses.specpal.science"> https://moses.specpal.science</a> <br>
+      <i>Twitter: </i>    <a style="text-decoration: none;" target="_blank" href="https://twitter.com/OlafenwaMoses"> @OlafenwaMoses</a> <br>
+      <i>Medium : </i>    <a style="text-decoration: none;" target="_blank" href="https://medium.com/@guymodscientist"> @guymodscientist</a> <br>
+      <i>Facebook : </i>    <a style="text-decoration: none;" target="_blank" href="https://facebook.com/moses.olafenwa"> moses.olafenwa</a> <br>
+<br>
+ </p>
+
+ <br>
 
 <pre>
 
