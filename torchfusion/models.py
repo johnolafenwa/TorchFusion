@@ -401,7 +401,7 @@ class BaseModel():
                         3)).item()
 
                 elif isinstance(module, nn.Linear):
-                    print("SIZE:",input[0].size())
+                   
                     flops = (torch.prod(torch.LongTensor(list(output.size()))) * input[0].size(1)).item()
 
                 summary.append(
