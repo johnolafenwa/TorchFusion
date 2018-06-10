@@ -242,7 +242,7 @@ if __name__ == "__main__":
 
 <h1>Tutorials</h1>
 
-[Training](TRAINING.md)
+[Training](TRAINING.md) <br>
 [GAN Tutorial](gan)
 
 See more at [Examples](examples)
