@@ -32,7 +32,7 @@ and Authors of [Introduction to Deep Computer Vision](https://john.specpal.scien
 
 <h1> Installation </h1>
 <h3> Install TorchFusion</h3>
-<pre> pip3 install https://github.com/johnolafenwa/TorchFusion/releases/download/0.1.0/torchfusion-0.1.1-py3-none-any.whl </pre>
+<pre> pip3 install https://github.com/johnolafenwa/TorchFusion/releases/download/0.1.1/torchfusion-0.1.1-py3-none-any.whl </pre>
 
 [Installing PyTorch on Windows](https://pytorch.org)
 <h3> CPU Only </h3>
