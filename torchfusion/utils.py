@@ -43,7 +43,7 @@ def visualize(y, x,display=True,save_path=None):
         plt.legend(m,[x_.name],loc=1)
     if save_path is not None:
         plt.savefig(save_path)
-    print("display",display)
+    
     if display:
         plt.show()
 
