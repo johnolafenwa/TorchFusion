@@ -4,7 +4,7 @@ A modern deep learning framework built to accelerate research and development of
 
 Based on PyTorch and fully compatible with pure PyTorch and other pytorch packages, <b>TorchFusion</b> provides a comprehensive extensible training framework
 with trainers that you can easily use to train, evaluate and run inference with your PyTorch models, A GAN framework that greatly simplifies the process of
-experimenting with Generative Adversarial Networks [Goodfellow et al. 2014](https://arxiv.org/1406.2661) , with concrete implementations of a number of GAN algorithms, and a number of high level network layers and utilities to help you be more productive in your work.
+experimenting with Generative Adversarial Networks [Goodfellow et al. 2014](https://arxiv.org/1406.2661), with concrete implementations of a number of GAN algorithms, and a number of high level network layers and utilities to help you be more productive in your work.
 
 <p>The framework is highly extensible, so you can easily create your own custom trainers for specific purposes.</p>
 
