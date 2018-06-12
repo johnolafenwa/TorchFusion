@@ -167,13 +167,13 @@ class BaseGANModel():
 
                 self.__disc_train_func__(t, s, disc_optimizer, running_disc_loss, e, i)
 
-                disc_loss = running_disc_loss.data[0] / disc_data_len
+                disc_loss = (running_disc_loss.data[0] / disc_data_len).item()
 
                 if (i+1) % disc_steps == 0:
                     self.__gen_train_func__(t, s, gen_optimizer, running_gen_loss, e, i)
                     gen_data_len += batch_size
 
-                    gen_loss = running_gen_loss.data[0] / gen_data_len
+                    gen_loss = (running_gen_loss.data[0] / gen_data_len).item()
 
                 if batch_log:
                      progress_dict = {"Gen Loss": gen_loss,"Disc Loss":disc_loss}
