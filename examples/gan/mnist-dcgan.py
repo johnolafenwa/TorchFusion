@@ -20,7 +20,7 @@ train_set = MNIST(root="./data", train=True, transform=train_transformations, do
 train_data = DataLoader(train_set,batch_size=batch_size,shuffle=True,num_workers=4)
 
 
-source = tfgan.NormalDistribution(length=len(train_set),size=(100))
+source = tfgan.NormalDistribution(length=len(train_set),size=(100,1,1))
 source_data = DataLoader(source,batch_size=batch_size,shuffle=True,num_workers=4)
 
 def weights_init(m):
