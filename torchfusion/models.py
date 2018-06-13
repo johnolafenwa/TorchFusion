@@ -261,8 +261,8 @@ class BaseModel():
                                       save_path=save_path)
             for metric in train_metrics:
                 if save_metrics:
-                    save_path = os.path.join(model_dir, "test_{}_epoch_{}.png".format(metric.name, e))
-                visualize(epoch_arr, [PlotInput(value=metric.history, name="Test " + metric.name, color="blue")],display=display_metrics,
+                    save_path = os.path.join(model_dir, "train_{}_epoch_{}.png".format(metric.name, e))
+                visualize(epoch_arr, [PlotInput(value=metric.history, name="Train " + metric.name, color="blue")],display=display_metrics,
                           save_path=save_path)
 
             self.on_epoch_end(e, train_metrics, test_metrics, train_loss, duration)
