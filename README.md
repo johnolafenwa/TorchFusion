@@ -24,9 +24,9 @@ experimenting with Generative Adversarial Networks [Goodfellow et al. 2014](http
 Future releases of TorchFusion will cut across multiple domains of Deep Learning.
 </b>
 
-An <b>AI Commons</b> project <a href="https://commons.specpal.science" >https://commons.specpal.science </a>
+An <b>AI Commons</b> project <a href="https://aicommons.science" >https://aicommons.science </a>
 Developed and Maintained by [John Olafenwa](https://twitter.com/johnolafenwa) and [Moses Olafenwa](https://twitter.com/OlafenwaMoses), brothers, creators of [ImageAI](https://github.com/OlafenwaMoses/ImageAI )
-and Authors of [Introduction to Deep Computer Vision](https://john.specpal.science/deepvision)
+and Authors of [Introduction to Deep Computer Vision](https://john.aicommons.science/deepvision)
 
 <hr>
 
@@ -254,7 +254,7 @@ See more at [Examples](examples)
   <br>
       <b>John Olafenwa</b> <br>
     <i>Email: </i>    <a style="text-decoration: none;"  href="mailto:johnolafenwa@gmail.com"> johnolafenwa@gmail.com</a> <br>
-      <i>Website: </i>    <a style="text-decoration: none;" target="_blank" href="https://john.specpal.science"> https://john.specpal.science</a> <br>
+      <i>Website: </i>    <a style="text-decoration: none;" target="_blank" href="https://john.aicommons.science"> https://john.aicommons.science</a> <br>
       <i>Twitter: </i>    <a style="text-decoration: none;" target="_blank" href="https://twitter.com/johnolafenwa"> @johnolafenwa</a> <br>
       <i>Medium : </i>    <a style="text-decoration: none;" target="_blank" href="https://medium.com/@johnolafenwa"> @johnolafenwa</a> <br>
       <i>Facebook : </i>    <a style="text-decoration: none;" href="https://facebook.com/olafenwajohn"> olafenwajohn</a> <br>
@@ -262,7 +262,7 @@ See more at [Examples](examples)
 <br>
   <b>Moses Olafenwa</b> <br>
     <i>Email: </i>    <a style="text-decoration: none;"  href="mailto:guymodscientist@gmail.com"> guymodscientist@gmail.com</a> <br>
-      <i>Website: </i>    <a style="text-decoration: none;" target="_blank" href="https://moses.specpal.science"> https://moses.specpal.science</a> <br>
+      <i>Website: </i>    <a style="text-decoration: none;" target="_blank" href="https://moses.aicommons.science"> https://moses.aicommons.science</a> <br>
       <i>Twitter: </i>    <a style="text-decoration: none;" target="_blank" href="https://twitter.com/OlafenwaMoses"> @OlafenwaMoses</a> <br>
       <i>Medium : </i>    <a style="text-decoration: none;" target="_blank" href="https://medium.com/@guymodscientist"> @guymodscientist</a> <br>
       <i>Facebook : </i>    <a style="text-decoration: none;" target="_blank" href="https://facebook.com/moses.olafenwa"> moses.olafenwa</a> <br>
