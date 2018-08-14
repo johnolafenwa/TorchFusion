@@ -1,6 +1,6 @@
 from torch.utils.data import Dataset
 import torch
-
+import torch.distributions as distibutions
 
 """ A Dataset containing Normal/Gaussian vectors of the specified dimension
     length: The total number of vectors
@@ -22,4 +22,7 @@ class NormalDistribution(Dataset):
 
     def __len__(self):
         return self.length
+
+
+
 

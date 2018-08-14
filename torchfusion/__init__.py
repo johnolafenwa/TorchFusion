@@ -1,10 +1,14 @@
-from .metrics import Accuracy,Metric,MSE
-from .models import BaseModel,StandardModel
-from .utils import adjust_learning_rate,visualize,PlotInput,decode_imagenet
-from .datasets import ImagesFromPaths,download_file
-from .layers import Reshape,Flatten,DepthwiseConv2d,DepthwiseConv1d,DepthwiseConv3d,DepthwiseConvTranspose1d,DepthwiseConvTranspose2d,DepthwiseConvTranspose3d,GlobalAvgPool2d,GlobalMaxPool2d
+
+from .learners import * #inspected #pending comprehensive tests
+from .datasets import * #inspected --add facades and few other dataset loaders --add mixed batchsize loader
+from .metrics import * #inspected --handle topK confidencescore
+from .layers import * #inspected #pending comprehensive tests
+from .initializers import * #inspected
+from .utils import * #inspected --add visualization
 
 
-__all__ = ["metrics","models","utils","datasets","layers"]
+__version__ = "0.2.0"
+
+__all__ = ["learners","datasets","metrics","layers","initializers","utils"]
 
 
