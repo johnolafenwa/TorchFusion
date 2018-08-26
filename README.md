@@ -8,7 +8,7 @@ experimenting with Generative Adversarial Networks [Goodfellow et al. 2014](http
 
 <p>The framework is highly extensible, so you can easily create your own custom trainers for specific purposes.</p>
 
-#New in 2.0
+# New in 2.0
 
   * Improved Trainer Framework 
   * Support for multiple Inputs and Outputs
@@ -32,16 +32,16 @@ Hinge GANs, GANs with divergence loss, Wasserstein GANs and Relativistic GANs.
 An <b>AI Commons</b> project [https://aicommons.science](https://aicommons.science)
 Developed and Maintained by [John Olafenwa](https://twitter.com/johnolafenwa) and [Moses Olafenwa](https://twitter.com/OlafenwaMoses), brothers, creators of [ImageAI](https://github.com/OlafenwaMoses/ImageAI ), Authors of [Introduction to Deep Computer Vision](https://john.specpal.science/deepvision) and Co-Founders of [AICommons Global Limited](https://aicommons.science)
 
-#Tutorials and Documentation
+# Tutorials and Documentation
 Visit [torchfusion.readthedocs.io](https://torchfusion.readthedocs.io) for comprehensive tutorials and examples on how to use Torchfusion
 
 <hr>
 
-#Installing TorchFusion
+# Installing TorchFusion
 <pre> pip3 install torchfusion </pre>
 
 
-#Installing Pytorch
+# Installing Pytorch
 Visit [Pytorch.org](https://pytorch.org) for instructions on installing pytorch.
 
 <br><br>
