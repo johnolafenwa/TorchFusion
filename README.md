@@ -187,14 +187,6 @@ if __name__ == "__main__":
 
 </pre>
 
-<h1>Tutorials</h1>
-
-[Training](TRAINING.md) <br>
-[GAN Tutorial](torchfusion/gan)
-
-See more at [Examples](examples)
-
-
 
 <h3><b><u>Contact Developers</u></b></h3>
  <p>
