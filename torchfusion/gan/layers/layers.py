@@ -1,19 +1,27 @@
-from ...layers import *
+from torchfusion.layers import *
 import torch.nn as nn
 import torch.nn.functional as F
 from torch.nn.utils import spectral_norm
 from math import floor,sqrt
-from ...initializers import *
+from torchfusion.initializers import *
 import torch
 
 class ConditionalBatchNorm2d(nn.Module):
     def __init__(self, num_features, num_class, eps=1e-5, momentum=0.1,
                  track_running_stats=True):
-        super().__init__()
+        """
 
-        self.bn = nn.BatchNorm2d(num_features=num_features,eps=eps,momentum=momentum,track_running_stats=track_running_stats, affine=False)
-        self.gamma_embed = nn.Embedding(num_class, num_features)
-        self.beta_embed = nn.Embedding(num_class, num_features)
+        :param num_features:
+        :param num_class:
+        :param eps:
+        :param momentum:
+        :param track_running_stats:
+        """
+        super(ConditionalBatchNorm2d,self).__init__()
+
+        self.bn = BatchNorm2d(num_features=num_features,eps=eps,momentum=momentum,track_running_stats=track_running_stats, affine=False)
+        self.gamma_embed = Embedding(num_class, num_features)
+        self.beta_embed = Embedding(num_class, num_features)
         self.gamma_embed.weight.data = torch.ones(self.gamma_embed.weight.size())
         self.beta_embed.weight.data = torch.zeros(self.gamma_embed.weight.size())
 
@@ -25,8 +33,16 @@ class ConditionalBatchNorm2d(nn.Module):
 
         return out
 
+
 class SelfAttention(nn.Module):
     def __init__(self,in_channels,weight_init=Kaiming_Normal(),bias_init=Zeros(),use_bias=False):
+        """
+
+        :param in_channels:
+        :param weight_init:
+        :param bias_init:
+        :param use_bias:
+        """
         super(SelfAttention,self).__init__()
 
         self.q = Conv2d(in_channels,in_channels//8,kernel_size=1,weight_init=weight_init,bias_init=bias_init,bias=use_bias)
@@ -56,12 +72,25 @@ class SelfAttention(nn.Module):
 
 
 class GeneratorResBlock(nn.Module):
-    def __init__(self,in_channels,out_channels,num_classes=0,upsample_size=1,kernel_size=3,activation=nn.ReLU(),conv_groups=1):
+    def __init__(self,in_channels,out_channels,num_classes=0,upsample_size=1,kernel_size=3,activation=nn.ReLU(),conv_groups=1,dropout_ratio=0):
+        """
+
+        :param in_channels:
+        :param out_channels:
+        :param num_classes:
+        :param upsample_size:
+        :param kernel_size:
+        :param activation:
+        :param conv_groups:
+        :param dropout_ratio:
+        """
         super(GeneratorResBlock,self).__init__()
         padding = floor(kernel_size/2)
         self.activation = activation
         self.num_classes = num_classes
         self.upsample_size = upsample_size
+
+        self.dropout = nn.Dropout(dropout_ratio)
 
         self.conv1 = spectral_norm(Conv2d(in_channels,out_channels,kernel_size=kernel_size,padding=padding,weight_init=Xavier_Uniform(sqrt(2)),groups=conv_groups))
         self.conv2 = spectral_norm(Conv2d(out_channels,out_channels,kernel_size=kernel_size,padding=padding,weight_init=Xavier_Uniform(sqrt(2)),groups=conv_groups))
@@ -85,7 +114,7 @@ class GeneratorResBlock(nn.Module):
         else:
             inputs = self.bn1(inputs)
 
-        inputs = self.conv1(self.activation(inputs))
+        inputs = self.dropout(self.conv1(self.activation(inputs)))
         if self.upsample_size > 1:
             inputs = F.interpolate(inputs,scale_factor=self.upsample_size)
 
@@ -103,10 +132,23 @@ class GeneratorResBlock(nn.Module):
 
 class StandardGeneratorBlock(nn.Module):
     def __init__(self,in_channels,out_channels,kernel_size,padding,stride,num_classes=0,activation=nn.LeakyReLU(0.2),conv_groups=1):
+        """
+
+        :param in_channels:
+        :param out_channels:
+        :param kernel_size:
+        :param padding:
+        :param stride:
+        :param num_classes:
+        :param activation:
+        :param conv_groups:
+        """
+
         super(StandardGeneratorBlock,self).__init__()
 
         self.activation = activation
         self.num_classes = num_classes
+
 
         self.conv = spectral_norm(ConvTranspose2d(in_channels,out_channels,kernel_size=kernel_size,padding=padding,stride=stride,weight_init=Xavier_Uniform(),groups=conv_groups))
         if num_classes > 0:
@@ -130,13 +172,24 @@ class StandardGeneratorBlock(nn.Module):
 
 
 class DiscriminatorResBlock(nn.Module):
-    def __init__(self,in_channels,out_channels,downsample_size=1,kernel_size=3,activation=nn.ReLU(),initial_activation=True,conv_groups=1):
-        super(DiscriminatorResBlock,self).__init__()
+    def __init__(self,in_channels,out_channels,downsample_size=1,kernel_size=3,activation=nn.ReLU(),initial_activation=True,conv_groups=1,dropout_ratio=0):
+        """
 
+        :param in_channels:
+        :param out_channels:
+        :param downsample_size:
+        :param kernel_size:
+        :param activation:
+        :param initial_activation:
+        :param conv_groups:
+        """
+
+        super(DiscriminatorResBlock,self).__init__()
 
         padding = floor(kernel_size / 2)
         self.activation = activation
         self.initial_activation = initial_activation
+        self.dropout = nn.Dropout(dropout_ratio)
 
         self.conv1 = spectral_norm(Conv2d(in_channels,out_channels,kernel_size=kernel_size,padding=padding,weight_init=Xavier_Uniform(),groups=conv_groups))
         self.conv2 = spectral_norm(Conv2d(out_channels,out_channels,kernel_size=kernel_size,padding=padding,weight_init=Xavier_Uniform(),groups=conv_groups))
@@ -159,7 +212,7 @@ class DiscriminatorResBlock(nn.Module):
             inputs = self.activation(inputs)
 
         inputs = self.conv1(inputs)
-        inputs = self.activation(inputs)
+        inputs = self.dropout(self.activation(inputs))
         inputs = self.conv2(inputs)
         inputs = self.downsample(inputs)
 
@@ -170,6 +223,18 @@ class DiscriminatorResBlock(nn.Module):
 
 class StandardDiscriminatorBlock(nn.Module):
     def __init__(self,in_channels,out_channels,kernel_size,padding,stride,activation=nn.LeakyReLU(0.2),use_bn=False,conv_groups=1):
+        """
+
+        :param in_channels:
+        :param out_channels:
+        :param kernel_size:
+        :param padding:
+        :param stride:
+        :param activation:
+        :param use_bn:
+        :param conv_groups:
+        """
+
         super(StandardDiscriminatorBlock,self).__init__()
 
         self.activation = activation
