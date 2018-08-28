@@ -976,7 +976,7 @@ class RAvgStandardGanLearner(StandardBaseGanLearner):
         real_labels = Variable(real_labels.cuda() if self.cuda else real_labels)
         fake_labels = Variable(fake_labels.cuda() if self.cuda else fake_labels)
 
-        loss = (self.loss_fn(real_preds - torch.mean(gen_preds),real_labels) + self.loss_fn(gen_preds - torch.mean(real_preds),fake_labels))/2
+        loss = (self.disc_loss_fn(real_preds - torch.mean(gen_preds),real_labels) + self.gen_loss_fn(gen_preds - torch.mean(real_preds),fake_labels))/2
 
         return loss
 
@@ -988,7 +988,7 @@ class RAvgStandardGanLearner(StandardBaseGanLearner):
         real_labels = Variable(real_labels.cuda() if self.cuda else real_labels)
         fake_labels = Variable(fake_labels.cuda() if self.cuda else fake_labels)
 
-        loss = (self.loss_fn(real_preds - torch.mean(gen_preds), fake_labels) + self.loss_fn(gen_preds - torch.mean(real_preds),real_labels))/2
+        loss = (self.gen_loss_fn(real_preds - torch.mean(gen_preds), fake_labels) + self.disc_loss_fn(gen_preds - torch.mean(real_preds),real_labels))/2
 
         return loss
 
