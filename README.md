@@ -38,7 +38,7 @@ Visit [torchfusion.readthedocs.io](https://torchfusion.readthedocs.io) for compr
 <hr>
 
 # Installing TorchFusion
-<pre> pip3 install torchfusion </pre>
+<pre> pip3 install --upgrade torchfusion </pre>
 
 
 # Installing Pytorch
