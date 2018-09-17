@@ -1,7 +1,7 @@
 from collections import namedtuple
 import torch.nn as nn
-from torchfusion.utils import *
-from torchfusion.learners import AbstractBaseLearner
+from ...utils import *
+from ...learners import AbstractBaseLearner
 
 import torch
 from torch.autograd import Variable, grad
@@ -11,7 +11,6 @@ import os
 from time import time
 import numpy as np
 import matplotlib.pyplot as plt
-from torchfusion.utils import PlotInput, visualize
 from torch.utils.data import DataLoader
 from tensorboardX import SummaryWriter
 import torch.distributions as distribution
@@ -58,15 +57,7 @@ class BaseGanLearner(AbstractBaseLearner):
 
         """
     def load_generator(self, path):
-        checkpoint = torch.load(path,map_location=lambda storage, loc: storage)
-        try:
-            self.gen_model.load_state_dict(checkpoint)
-        except:
-            copy = dict()
-            for x, y in zip(self.gen_model.state_dict(), checkpoint):
-                new_name = y[y.index(x):]
-                copy[new_name] = checkpoint[y]
-            self.gen_model.load_state_dict(copy)
+        load_model(self.gen_model,path)
 
 
     r"""Initialize discriminator model weights using pre-trained weights from the filepath
@@ -77,15 +68,7 @@ class BaseGanLearner(AbstractBaseLearner):
         """
 
     def load_discriminator(self, path):
-        checkpoint = torch.load(path,map_location=lambda storage, loc: storage)
-        try:
-            self.disc_model.load_state_dict(checkpoint)
-        except:
-            copy = dict()
-            for x, y in zip(self.disc_model.state_dict(), checkpoint):
-                new_name = y[y.index(x):]
-                copy[new_name] = checkpoint[y]
-            self.disc_model.load_state_dict(copy)
+        load_model(self.disc_model, path)
 
     r"""Saves the generator model to the path specified
             Args:
@@ -94,10 +77,7 @@ class BaseGanLearner(AbstractBaseLearner):
 
             """
     def save_generator(self, path,save_architecture=False):
-        if save_architecture:
-            torch.save(self.gen_model,path)
-        else:
-            torch.save(self.gen_model.state_dict(), path)
+        save_model(self.gen_model,path,save_architecture)
 
     r"""Saves the discriminator model to the path specified
             Args:
@@ -106,10 +86,7 @@ class BaseGanLearner(AbstractBaseLearner):
 
             """
     def save_discriminator(self, path,save_architecture=False):
-        if save_architecture:
-            torch.save(self.disc_model,path)
-        else:
-            torch.save(self.disc_model.state_dict(), path)
+        save_model(self.disc_model, path, save_architecture)
 
 
     def train(self,*args):

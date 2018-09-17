@@ -173,9 +173,9 @@ def get_model_summary(model,*input_tensors,item_length=26,tensorboard_log=None):
             layer_name = class_name + "_" + str(instance_index)
 
             params = 0
-
-            for param_ in module.parameters():
-                params += param_.view(-1).size(0)
+            if hasattr(module,"weight"):
+                for param_ in module.parameters():
+                    params += param_.view(-1).size(0)
 
             flops = "Not Available"
             if class_name.find("Conv") != -1 and hasattr(module, "weight"):
@@ -288,6 +288,24 @@ def clip_grads(model,lower,upper):
     for params in model.parameters():
         params.data.clamp_(lower,upper)
 
+def save_model(model,path,save_architecture):
+    if save_architecture:
+        torch.save(model, path)
+    else:
+        state = model.state_dict()
+        for key in state: state[key] = state[key].clone().cpu()
+        torch.save(state, path)
+
+def load_model(model,path):
+    checkpoint = torch.load(path, map_location=lambda storage, loc: storage)
+    try:
+        model.load_state_dict(checkpoint)
+    except:
+        copy = dict()
+        for x, y in zip(model.state_dict(), checkpoint):
+            new_name = y[y.index(x):]
+            copy[new_name] = checkpoint[y]
+        model.load_state_dict(copy)
 
 
 def load_image(file,grayscale=False,target_size=None,to_tensor=True,mean=None,std=None,interpolation = Image.BILINEAR):

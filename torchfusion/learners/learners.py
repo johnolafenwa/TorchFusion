@@ -6,7 +6,7 @@ import os
 from time import time
 from math import ceil
 from io import open
-from ..utils import PlotInput, visualize, get_model_summary,get_batch_size,clip_grads
+from ..utils import PlotInput, visualize, get_model_summary,get_batch_size,clip_grads,save_model,load_model
 from tensorboardX import SummaryWriter
 from torch.optim.lr_scheduler import ReduceLROnPlateau
 import torch.onnx as onnx
@@ -137,15 +137,7 @@ class BaseLearner(AbstractBaseLearner):
 
         """
     def load_model(self, path):
-        checkpoint = torch.load(path,map_location=lambda storage, loc: storage)
-        try:
-            self.model.load_state_dict(checkpoint)
-        except:
-            copy = dict()
-            for x, y in zip(self.model.state_dict(), checkpoint):
-                new_name = y[y.index(x):]
-                copy[new_name] = checkpoint[y]
-            self.model.load_state_dict(copy)
+        load_model(self.model,path)
 
 
     r"""Saves the model to the path specified
@@ -155,10 +147,7 @@ class BaseLearner(AbstractBaseLearner):
 
             """
     def save_model(self, path,save_architecture=False):
-        if save_architecture:
-            torch.save(self.model,path)
-        else:
-            torch.save(self.model.state_dict(), path)
+        save_model(self.model,path,save_architecture)
 
     def train(self,*args):
 

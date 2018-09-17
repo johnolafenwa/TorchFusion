@@ -79,13 +79,17 @@ class Accuracy(Metric):
         """
 
         if isinstance(prediction,list) or isinstance(prediction,tuple):
-            correct = torch.FloatTensor([0.0])
+            correct = None
             for preds,labels in zip(prediction,label):
                 preds = preds.cpu().data
                 labels = labels.cpu().data.long()
                 _, pred = preds.topk(self.topK,1,True,True)
                 pred = pred.t()
-                correct += pred.eq(labels.view(1,-1).expand_as(pred))[:self.topK].view(-1).float().sum(0,True)
+                if correct is None:
+                    correct = pred.eq(labels.view(1,-1).expand_as(pred))[:self.topK].view(-1).float().sum(0,True)
+                else:
+                    correct += pred.eq(labels.view(1, -1).expand_as(pred))[:self.topK].view(-1).float().sum(0, True)
+
         else:
 
             predictions = prediction.cpu().data
@@ -118,7 +122,7 @@ class MeanConfidenceScore(Metric):
         """
 
         if isinstance(prediction, list) or isinstance(prediction, tuple):
-            sum = torch.FloatTensor([0.0])
+            sum = None
             for preds,labels in zip(prediction,label):
                 labels = labels.long()
                 if self.apply_softmax:
@@ -127,20 +131,25 @@ class MeanConfidenceScore(Metric):
                 for i, pred in enumerate(preds):
                     y_score = pred[labels[i]]
                     val = y_score if y_score in pred.topk(self.topK)[0] else 0
-
-                    sum.add_(val)
+                    if sum is None:
+                        sum = val
+                    else:
+                        sum.add_(val)
         else:
             labels = label.long()
             if self.apply_softmax:
                 prediction = nn.Softmax(dim=1)(prediction)
 
-            sum = torch.FloatTensor([0.0])
+            sum = None
 
             for i, pred in enumerate(prediction):
                 y_score = pred[labels[i]]
                 val = y_score if y_score in pred.topk(self.topK)[0] else 0
 
-                sum.add_(val)
+                if sum is None:
+                    sum = val
+                else:
+                    sum.add_(val)
 
         return sum
 
@@ -165,10 +174,13 @@ class MSE(Metric):
         :return:
         """
         if isinstance(prediction, list) or isinstance(prediction, tuple):
-            sum = torch.FloatTensor([0.0])
+            sum = None
 
             for preds,labels in zip(prediction,label):
-                sum += torch.sum((preds - labels) ** 2)
+                if sum is None:
+                    sum = torch.sum((preds - labels) ** 2)
+                else:
+                    sum += torch.sum((preds - labels) ** 2)
 
         else:
             sum = torch.sum((prediction - label) ** 2)
@@ -191,10 +203,14 @@ class MAE(Metric):
         :return:
         """
         if isinstance(prediction, list) or isinstance(prediction, tuple):
-            sum = torch.FloatTensor([0.0])
+            sum = None
 
             for preds,labels in zip(prediction,label):
-                sum += torch.sum(torch.abs(preds - labels))
+                if sum is None:
+                    sum = torch.sum(torch.abs(preds - labels))
+                else:
+                    sum += torch.sum(torch.abs(preds - labels))
+
 
         else:
             sum = torch.sum(torch.abs(prediction - label))
