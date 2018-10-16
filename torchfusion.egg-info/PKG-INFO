@@ -1,0 +1,13 @@
+Metadata-Version: 1.1
+Name: torchfusion
+Version: 0.2.2
+Summary: A modern deep learning framework built to accelerate research and development of AI systems
+Home-page: https://github.com/johnolafenwa/TorchFusion
+Author: John Olafenwa and Moses Olafenwa
+Author-email: UNKNOWN
+License: MIT
+Description: UNKNOWN
+Platform: UNKNOWN
+Classifier: Programming Language :: Python :: 3
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
