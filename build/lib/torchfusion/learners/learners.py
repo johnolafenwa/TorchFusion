@@ -2,9 +2,6 @@ import torch
 from torch.autograd import Variable
 import torch.cuda as cuda
 from torch.utils.data import DataLoader
-import torch.nn as nn
-from torch.optim import Adam
-from torch.optim.lr_scheduler import StepLR
 import os
 from time import time
 from math import ceil
