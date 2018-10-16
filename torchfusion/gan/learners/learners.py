@@ -668,8 +668,7 @@ class StandardBaseGanLearner(BaseGanCore):
         loss = self.__update_discriminator_loss__(x,generated,outputs,gen_outputs)
         loss.backward()
         self.disc_optimizer.step()
-
-        self.disc_running_loss.add_(loss.cpu() * batch_size)
+        self.disc_running_loss = self.disc_running_loss + (loss.cpu().item() * batch_size)
 
     def __gen_train_func__(self, data):
 
@@ -731,8 +730,8 @@ class StandardBaseGanLearner(BaseGanCore):
         loss.backward()
 
         self.gen_optimizer.step()
-
-        self.gen_running_loss.add_(loss.cpu() * batch_size)
+        self.gen_running_loss = self.gen_running_loss + (loss.cpu().item() * batch_size)
+        
 
     def __update_generator_loss__(self,real_images,gen_images,real_preds,gen_preds):
         raise NotImplementedError()
@@ -1272,8 +1271,7 @@ class WGanLearner(BaseGanCore):
         loss = gen_loss + real_loss + gradient_penalty
         loss.backward()
         self.disc_optimizer.step()
-
-        self.disc_running_loss.add_(loss.cpu() * batch_size)
+        self.disc_running_loss = self.disc_running_loss + (loss.cpu().item() * batch_size)
 
     def __gen_train_func__(self, data):
 
@@ -1327,7 +1325,6 @@ class WGanLearner(BaseGanCore):
         loss.backward()
 
         self.gen_optimizer.step()
-
-        self.gen_running_loss.add_(loss.cpu() * batch_size)
+        self.gen_running_loss = self.gen_running_loss + (loss.cpu().item() * batch_size)
 
 

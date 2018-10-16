@@ -1104,8 +1104,7 @@ class StandardLearner(BaseLearner):
         loss.backward()
 
         self.optimizer.step()
-
-        self.train_running_loss.add_(loss.cpu() * batch_size)
+        self.train_running_loss = self.train_running_loss + (loss.cpu().item() * batch_size)
 
         for metric in self.train_metrics:
             metric.update(outputs, train_y)
@@ -1272,9 +1271,8 @@ class TextClassifier(BaseTextLearner):
         loss.backward()
 
         self.optimizer.step()
-
-        self.train_running_loss.add_(loss.cpu() * batch_size)
-
+        self.train_running_loss = self.train_running_loss + (loss.cpu().item() * batch_size)
+        
         for metric in self.train_metrics:
             metric.update(outputs, train_y,self.batch_first)
 
