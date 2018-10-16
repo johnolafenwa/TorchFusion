@@ -471,7 +471,6 @@ class BaseGanCore(BaseGanLearner):
                 if self.cuda:
                     class_labels = class_labels.cuda()
 
-                class_labels = Variable(class_labels)
                 outputs = self.gen_model(self.fixed_source, class_labels)
 
                 images_file = os.path.join(class_path, "iteration{}.png".format(iteration))
@@ -509,8 +508,7 @@ class BaseGanCore(BaseGanLearner):
 
                 if self.cuda:
                     class_labels = class_labels.cuda()
-
-                class_labels = Variable(class_labels)
+                
                 outputs = self.gen_model(self.fixed_source, class_labels)
 
                 images = vutils.make_grid(outputs.cpu().data, normalize=True)
@@ -546,10 +544,8 @@ class BaseGanCore(BaseGanLearner):
             if labels is not None:
                 labels = labels.cuda()
 
-        source = Variable(source)
-
         if labels is not None:
-            labels = Variable(labels.unsqueeze(1) if len(labels.size()) == 1 else labels)
+            labels = labels.unsqueeze(1) if len(labels.size()) == 1 else labels
             outputs = self.gen_model(source, labels)
         else:
             outputs = self.gen_model(source)
@@ -558,20 +554,20 @@ class BaseGanCore(BaseGanLearner):
 
     def gen_summary(self, input_size, label=None, input_type=torch.FloatTensor, item_length=26, tensorboard_log=None):
         input = torch.randn(input_size).type(input_type).unsqueeze(0)
-        inputs = Variable(input.cuda() if self.cuda else input)
+        inputs = input.cuda() if self.cuda else input
         if label is not None:
             label = torch.randn(1, 1).fill_(label).long()
-            label = Variable(label.cuda() if self.cuda else label)
+            label = label.cuda() if self.cuda else label
             return get_model_summary(self.gen_model, inputs,label, item_length=item_length, tensorboard_log=tensorboard_log)
         else:
             return get_model_summary(self.gen_model, inputs, item_length=item_length,tensorboard_log=tensorboard_log)
 
     def disc_summary(self, input_size, label=None, input_type=torch.FloatTensor, item_length=26, tensorboard_log=None):
         input = torch.randn(input_size).type(input_type).unsqueeze(0)
-        inputs = Variable(input.cuda() if self.cuda else input)
+        inputs = input.cuda() if self.cuda else input
         if label is not None:
             label = torch.randn(1, 1).fill_(label).long()
-            label = Variable(label.cuda() if self.cuda else label)
+            label = label.cuda() if self.cuda else label
             return get_model_summary(self.gen_model, inputs, label, item_length=item_length,
                                      tensorboard_log=tensorboard_log)
         else:
@@ -644,7 +640,7 @@ class StandardBaseGanLearner(BaseGanCore):
         x = Variable(x)
         source = Variable(source)
         if self.conditional:
-            class_labels = Variable(class_labels.unsqueeze(1) if len(class_labels.size())==1 else class_labels)
+            class_labels = class_labels.unsqueeze(1) if len(class_labels.size())==1 else class_labels
 
         if self.conditional:
             outputs = self.disc_model(x, class_labels)
@@ -656,7 +652,7 @@ class StandardBaseGanLearner(BaseGanCore):
             if self.cuda:
                 random_labels = random_labels.cuda()
 
-            random_labels = Variable(random_labels)
+            
 
             generated = self.gen_model(source, random_labels)
             gen_outputs = self.disc_model(generated.detach(), random_labels)
@@ -668,8 +664,8 @@ class StandardBaseGanLearner(BaseGanCore):
         loss = self.__update_discriminator_loss__(x,generated,outputs,gen_outputs)
         loss.backward()
         self.disc_optimizer.step()
-
-        self.disc_running_loss.add_(loss.cpu() * batch_size)
+        self.disc_running_loss = self.disc_running_loss + (loss.cpu().item() * batch_size)
+       
 
     def __gen_train_func__(self, data):
 
@@ -698,7 +694,7 @@ class StandardBaseGanLearner(BaseGanCore):
             if self.cuda:
                 random_labels = random_labels.cuda()
 
-            random_labels = Variable(random_labels)
+           
 
         if self.cuda:
             source = source.cuda()
@@ -709,8 +705,6 @@ class StandardBaseGanLearner(BaseGanCore):
 
         source = Variable(source)
         x = Variable(x)
-        if self.conditional and self.relative_mode:
-            class_labels = Variable(class_labels)
 
         if self.conditional:
             fake_images = self.gen_model(source, random_labels)
@@ -731,8 +725,8 @@ class StandardBaseGanLearner(BaseGanCore):
         loss.backward()
 
         self.gen_optimizer.step()
-
-        self.gen_running_loss.add_(loss.cpu() * batch_size)
+        self.gen_running_loss = self.gen_running_loss + (loss.cpu().item() * batch_size)
+       
 
     def __update_generator_loss__(self,real_images,gen_images,real_preds,gen_preds):
         raise NotImplementedError()
@@ -795,8 +789,8 @@ class StandardGanLearner(StandardBaseGanLearner):
         real_labels = torch.randn(batch_size, 1).fill_(self.real_labels)
         fake_labels = torch.randn(batch_size, 1).fill_(self.fake_labels)
 
-        real_labels = Variable(real_labels.cuda() if self.cuda else real_labels)
-        fake_labels = Variable(fake_labels.cuda() if self.cuda else fake_labels)
+        real_labels = real_labels.cuda() if self.cuda else real_labels
+        fake_labels = fake_labels.cuda() if self.cuda else fake_labels
 
         real_loss = self.disc_loss_fn(real_preds,real_labels)
 
@@ -809,7 +803,7 @@ class StandardGanLearner(StandardBaseGanLearner):
         batch_size = x.size(0)
         real_labels = torch.ones(batch_size, 1)
 
-        real_labels = Variable(real_labels.cuda() if self.cuda else real_labels)
+        real_labels = real_labels.cuda() if self.cuda else real_labels
 
         loss = self.gen_loss_fn(gen_preds,real_labels)
 
@@ -875,7 +869,7 @@ class RStandardGanLearner(StandardBaseGanLearner):
         batch_size = x.size(0)
         real_labels = torch.ones(batch_size, 1)
 
-        real_labels = Variable(real_labels.cuda() if self.cuda else real_labels)
+        real_labels = real_labels.cuda() if self.cuda else real_labels
 
         loss = self.disc_loss_fn(real_preds - gen_preds,real_labels)
 
@@ -885,7 +879,7 @@ class RStandardGanLearner(StandardBaseGanLearner):
         batch_size = x.size(0)
         real_labels = torch.ones(batch_size, 1)
 
-        real_labels = Variable(real_labels.cuda() if self.cuda else real_labels)
+        real_labels = real_labels.cuda() if self.cuda else real_labels
 
         loss = self.gen_loss_fn(gen_preds - real_preds,real_labels)
 
@@ -950,8 +944,8 @@ class RAvgStandardGanLearner(StandardBaseGanLearner):
         real_labels = torch.ones(batch_size, 1)
         fake_labels = torch.zeros(batch_size, 1)
 
-        real_labels = Variable(real_labels.cuda() if self.cuda else real_labels)
-        fake_labels = Variable(fake_labels.cuda() if self.cuda else fake_labels)
+        real_labels = real_labels.cuda() if self.cuda else real_labels
+        fake_labels = fake_labels.cuda() if self.cuda else fake_labels
 
         loss = (self.disc_loss_fn(real_preds - torch.mean(gen_preds),real_labels) + self.gen_loss_fn(gen_preds - torch.mean(real_preds),fake_labels))/2
 
@@ -962,8 +956,8 @@ class RAvgStandardGanLearner(StandardBaseGanLearner):
         real_labels = torch.ones(batch_size, 1)
         fake_labels = torch.zeros(batch_size, 1)
 
-        real_labels = Variable(real_labels.cuda() if self.cuda else real_labels)
-        fake_labels = Variable(fake_labels.cuda() if self.cuda else fake_labels)
+        real_labels = real_labels.cuda() if self.cuda else real_labels
+        fake_labels = fake_labels.cuda() if self.cuda else fake_labels
 
         loss = (self.gen_loss_fn(real_preds - torch.mean(gen_preds), fake_labels) + self.disc_loss_fn(gen_preds - torch.mean(real_preds),real_labels))/2
 
@@ -1219,10 +1213,9 @@ class WGanLearner(BaseGanCore):
             if self.conditional:
                 class_labels = class_labels.cuda()
 
-        x = Variable(x)
-        source = Variable(source)
+       
         if self.conditional:
-            class_labels = Variable(class_labels.unsqueeze(1) if len(class_labels.size()) == 1 else class_labels)
+            class_labels = class_labels.unsqueeze(1) if len(class_labels.size()) == 1 else class_labels
 
         if self.conditional:
             outputs = self.disc_model(x, class_labels)
@@ -1233,8 +1226,6 @@ class WGanLearner(BaseGanCore):
             random_labels = torch.from_numpy(np.random.randint(0, self.classes, size=(batch_size, 1))).long()
             if self.cuda:
                 random_labels = random_labels.cuda()
-
-            random_labels = Variable(random_labels)
 
             generated = self.gen_model(source, random_labels)
             gen_outputs = self.disc_model(generated.detach(), random_labels)
@@ -1272,9 +1263,8 @@ class WGanLearner(BaseGanCore):
         loss = gen_loss + real_loss + gradient_penalty
         loss.backward()
         self.disc_optimizer.step()
-
-        self.disc_running_loss.add_(loss.cpu() * batch_size)
-
+        self.disc_running_loss = self.disc_running_loss + (loss.cpu().item() * batch_size)
+        
     def __gen_train_func__(self, data):
 
         super().__gen_train_func__(data)
@@ -1302,7 +1292,7 @@ class WGanLearner(BaseGanCore):
             if self.cuda:
                 random_labels = random_labels.cuda()
 
-            random_labels = Variable(random_labels)
+            random_labels = random_labels
 
         if self.cuda:
             source = source.cuda()
@@ -1310,9 +1300,6 @@ class WGanLearner(BaseGanCore):
             x = x.cuda()
             if self.conditional:
                 class_labels = class_labels.cuda()
-
-        source = Variable(source)
-
 
         if self.conditional:
             fake_images = self.gen_model(source, random_labels)
@@ -1327,7 +1314,7 @@ class WGanLearner(BaseGanCore):
         loss.backward()
 
         self.gen_optimizer.step()
+        self.gen_running_Loss = self.gen_running_loss + (loss.cpu().item() * batch_size)
 
-        self.gen_running_loss.add_(loss.cpu() * batch_size)
 
 
