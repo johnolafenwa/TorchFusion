@@ -1,1 +1,0 @@
-from .initializers import Kaiming_Normal,Kaiming_Uniform,Xavier_Normal,Xavier_Uniform, Normal,Uniform,Ones,Zeros,Constant,Eye,Dirac,Sparse,Orthogonal
