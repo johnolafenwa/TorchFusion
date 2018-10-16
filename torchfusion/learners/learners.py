@@ -1117,14 +1117,14 @@ class StandardLearner(BaseLearner):
         test_x, test_y = data
 
         if isinstance(test_x, list) or isinstance(test_x, tuple):
-            test_x = (Variable(x.cuda() if self.cuda else x) for x in test_x)
+            test_x = (x.cuda() if self.cuda else x for x in test_x)
         else:
-            test_x = Variable(test_x.cuda() if self.cuda else test_x)
+            test_x = test_x.cuda() if self.cuda else test_x
 
         if isinstance(test_y, list) or isinstance(test_y, tuple):
-            test_y = (Variable(y.cuda() if self.cuda else y) for y in test_y)
+            test_y = (y.cuda() if self.cuda else y for y in test_y)
         else:
-            test_y = Variable(test_y.cuda() if self.cuda else test_y)
+            test_y = test_y.cuda() if self.cuda else test_y
 
         outputs = self.model(test_x)
 
@@ -1135,14 +1135,14 @@ class StandardLearner(BaseLearner):
 
         val_x, val_y = data
         if isinstance(val_x, list) or isinstance(val_x, tuple):
-            val_x = (Variable(x.cuda() if self.cuda else x) for x in val_x)
+            val_x = (x.cuda() if self.cuda else x for x in val_x)
         else:
-            val_x = Variable(val_x.cuda() if self.cuda else val_x)
+            val_x = val_x.cuda() if self.cuda else val_x
 
         if isinstance(val_y, list) or isinstance(val_y, tuple):
-            val_y = (Variable(y.cuda() if self.cuda else y) for y in val_y)
+            val_y = (y.cuda() if self.cuda else y for y in val_y)
         else:
-            val_y = Variable(val_y.cuda() if self.cuda else val_y)
+            val_y = val_y.cuda() if self.cuda else val_y
 
         outputs = self.model(val_x)
 
@@ -1151,9 +1151,9 @@ class StandardLearner(BaseLearner):
 
     def __predict_func__(self, inputs):
         if isinstance(inputs, list) or isinstance(inputs, tuple):
-            inputs = (Variable(x.cuda() if self.cuda else x) for x in inputs)
+            inputs = (x.cuda() if self.cuda else x for x in inputs)
         else:
-            inputs = Variable(inputs.cuda() if self.cuda else inputs)
+            inputs = inputs.cuda() if self.cuda else inputs
 
         return self.model(inputs)
 
@@ -1174,11 +1174,11 @@ class StandardLearner(BaseLearner):
         if isinstance(input_sizes,list):
             inputs = (torch.randn(input_size).type(input_type).unsqueeze(0) for input_size, input_type in zip(input_sizes,input_types))
 
-            inputs = (Variable(input.cuda() if self.cuda else input) for input in inputs)
+            inputs = (input.cuda() if self.cuda else input for input in inputs)
         else:
             inputs = torch.randn(input_sizes).type(input_types).unsqueeze(0)
 
-            inputs = Variable(inputs.cuda() if self.cuda else inputs)
+            inputs = inputs.cuda() if self.cuda else inputs
 
 
         return get_model_summary(self.model,inputs,item_length=item_length,tensorboard_log=tensorboard_log)
@@ -1195,11 +1195,11 @@ class StandardLearner(BaseLearner):
         if isinstance(input_sizes,list):
             inputs = (torch.randn(input_size).type(input_type).unsqueeze(0) for input_size, input_type in zip(input_sizes,input_types))
 
-            inputs = (Variable(input.cuda() if self.cuda else input) for input in inputs)
+            inputs = (input.cuda() if self.cuda else input for input in inputs)
         else:
             inputs = torch.randn(input_sizes).type(input_types).unsqueeze(0)
 
-            inputs = Variable(inputs.cuda() if self.cuda else inputs)
+            inputs = inputs.cuda() if self.cuda else inputs
 
         return onnx._export(self.model, inputs, f=path, **kwargs)
 
@@ -1260,14 +1260,14 @@ class TextClassifier(BaseTextLearner):
         batch_size = get_batch_size(train_x,self.batch_first)
 
         if isinstance(train_x, list) or isinstance(train_x, tuple):
-            train_x = (Variable(x.cuda() if self.cuda else x) for x in train_x)
+            train_x = (x.cuda() if self.cuda else x for x in train_x)
         else:
-            train_x = Variable(train_x.cuda() if self.cuda else train_x)
+            train_x = train_x.cuda() if self.cuda else train_x
 
         if isinstance(train_y, list) or isinstance(train_y, tuple):
-            train_y = (Variable(y.cuda() if self.cuda else y) for y in train_y)
+            train_y = (y.cuda() if self.cuda else y for y in train_y)
         else:
-            train_y = Variable(train_y.cuda() if self.cuda else train_y)
+            train_y = train_y.cuda() if self.cuda else train_y
 
         outputs = self.model(train_x)
         loss = self.loss_fn(outputs, train_y)
@@ -1284,14 +1284,14 @@ class TextClassifier(BaseTextLearner):
         test_x = getattr(data, self.source_field)
         test_y = getattr(data, self.target_field)
         if isinstance(test_x, list) or isinstance(test_x, tuple):
-            test_x = (Variable(x.cuda() if self.cuda else x) for x in test_x)
+            test_x = (x.cuda() if self.cuda else x for x in test_x)
         else:
-            test_x = Variable(test_x.cuda() if self.cuda else test_x)
+            test_x = test_x.cuda() if self.cuda else test_x
 
         if isinstance(test_y, list) or isinstance(test_y, tuple):
-            test_y = (Variable(y.cuda() if self.cuda else y) for y in test_y)
+            test_y = (y.cuda() if self.cuda else y for y in test_y)
         else:
-            test_y = Variable(test_y.cuda() if self.cuda else test_y)
+            test_y = test_y.cuda() if self.cuda else test_y
 
         outputs = self.model(test_x)
 
@@ -1303,14 +1303,14 @@ class TextClassifier(BaseTextLearner):
         val_x = getattr(data, self.source_field)
         val_y = getattr(data, self.target_field)
         if isinstance(val_x, list) or isinstance(val_x, tuple):
-            val_x = (Variable(x.cuda() if self.cuda else x) for x in val_x)
+            val_x = (x.cuda() if self.cuda else x for x in val_x)
         else:
-            val_x = Variable(val_x.cuda() if self.cuda else val_x)
+            val_x = val_x.cuda() if self.cuda else val_x
 
         if isinstance(val_y, list) or isinstance(val_y, tuple):
-            val_y = (Variable(y.cuda() if self.cuda else y) for y in val_y)
+            val_y = (y.cuda() if self.cuda else y for y in val_y)
         else:
-            val_y = Variable(val_y.cuda() if self.cuda else val_y)
+            val_y = val_y.cuda() if self.cuda else val_y
 
 
         outputs = self.model(val_x)
@@ -1320,9 +1320,9 @@ class TextClassifier(BaseTextLearner):
 
     def __predict_func__(self, inputs):
         if isinstance(inputs, list) or isinstance(inputs, tuple):
-            inputs = (Variable(x.cuda() if self.cuda else x) for x in inputs)
+            inputs = (x.cuda() if self.cuda else x for x in inputs)
         else:
-            inputs = Variable(inputs.cuda() if self.cuda else inputs)
+            inputs = inputs.cuda() if self.cuda else inputs
 
         return self.model(inputs)
 
@@ -1342,11 +1342,11 @@ def summary(self, input_sizes, input_types=torch.FloatTensor, item_length=26, te
     if isinstance(input_sizes, list):
         inputs = (torch.randn(input_size).type(input_type).unsqueeze(0) for input_size, input_type in zip(input_sizes, input_types))
 
-        inputs = (Variable(input.cuda() if self.cuda else input) for input in inputs)
+        inputs = (input.cuda() if self.cuda else input for input in inputs)
     else:
         inputs = torch.randn(input_sizes).type(input_types).unsqueeze(0)
 
-        inputs = Variable(inputs.cuda() if self.cuda else inputs)
+        inputs = inputs.cuda() if self.cuda else inputs
 
     return get_model_summary(self.model, inputs, item_length=item_length, tensorboard_log=tensorboard_log)
 
@@ -1363,10 +1363,10 @@ def to_onnx(self, input_sizes, path, input_types=torch.FloatTensor, **kwargs):
         inputs = (torch.randn(input_size).type(input_type).unsqueeze(0) for input_size, input_type in
                   zip(input_sizes, input_types))
 
-        inputs = (Variable(input.cuda() if self.cuda else input) for input in inputs)
+        inputs = (input.cuda() if self.cuda else input for input in inputs)
     else:
         inputs = torch.randn(input_sizes).type(input_types).unsqueeze(0)
 
-        inputs = Variable(inputs.cuda() if self.cuda else inputs)
+        inputs = inputs.cuda() if self.cuda else inputs
 
     return onnx._export(self.model, inputs, f=path, **kwargs)
