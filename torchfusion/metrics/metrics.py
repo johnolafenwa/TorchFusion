@@ -92,7 +92,7 @@ class Accuracy(Metric):
 
         else:
 
-            predictions = prediction.cpu().data
+            predictions = prediction.type(torch.float32).cpu().data
             labels = label.cpu().data.long()
             _, pred = predictions.topk(self.topK, 1, True, True)
             pred = pred.t()

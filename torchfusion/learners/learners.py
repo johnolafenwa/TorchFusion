@@ -1071,11 +1071,12 @@ class StandardLearner(BaseLearner):
                    """
     def train(self, train_loader, loss_fn, optimizer, train_metrics, test_loader=None, test_metrics=None, val_loader=None,val_metrics=None, num_epochs=10,lr_scheduler=None,
               save_models="all", model_dir=os.getcwd(),save_model_interval=1,display_metrics=False, save_metrics=False, notebook_mode=False, batch_log=True, save_logs=None,
-              visdom_log=None,tensorboard_log=None, save_architecture=False,clip_grads=None):
+              visdom_log=None,tensorboard_log=None, save_architecture=False,clip_grads=None,fp16_mode=False):
 
         self.optimizer = optimizer
         self.loss_fn = loss_fn
         self.clip_grads = clip_grads
+        self.fp16_mode = fp16_mode
         super().__train_loop__(train_loader, train_metrics, test_loader, test_metrics, val_loader,val_metrics, num_epochs,lr_scheduler,
               save_models, model_dir,save_model_interval,display_metrics, save_metrics, notebook_mode, batch_log, save_logs,
               visdom_log,tensorboard_log, save_architecture)
@@ -1104,7 +1105,10 @@ class StandardLearner(BaseLearner):
 
         outputs = self.model(train_x)
         loss = self.loss_fn(outputs, train_y)
-        loss.backward()
+        if self.fp16_mode:
+            self.optimizer.backward(loss)
+        else:
+            loss.backward()
 
         self.optimizer.step()
         self.train_running_loss = self.train_running_loss + (loss.cpu().item() * batch_size)
@@ -1316,7 +1320,7 @@ class TextClassifier(BaseTextLearner):
         outputs = self.model(val_x)
 
         for metric in self.val_metrics:
-            metric.update(outputs.cpu().data, val_y.cpu().data,self.batch_first)
+            metric.update(outputs.cpu().data , val_y.cpu().data,self.batch_first)
 
     def __predict_func__(self, inputs):
         if isinstance(inputs, list) or isinstance(inputs, tuple):
