@@ -1,0 +1,7 @@
+torchvision
+torchtext
+numpy
+matplotlib
+tqdm
+tensorboardX
+visdom
