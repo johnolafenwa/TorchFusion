@@ -13,6 +13,7 @@ from ..utils import PlotInput, visualize, get_model_summary,get_batch_size,clip_
 from tensorboardX import SummaryWriter
 from torch.optim.lr_scheduler import ReduceLROnPlateau
 import torch.onnx as onnx
+import torch.backends.cudnn as cudnn
 
 r"""Abstract base Model for training, evaluating and performing inference
 All custom models should subclass this and implement train, evaluate and predict functions
@@ -25,9 +26,12 @@ All custom models should subclass this and implement train, evaluate and predict
 
 class AbstractBaseLearner():
     def __init__(self, use_cuda_if_available=True):
+
         self.cuda = False
+        self.fp16_mode = False
         if use_cuda_if_available and cuda.is_available():
             self.cuda = True
+            cudnn.benchmark = True
 
         self.epoch_start_funcs = []
         self.batch_start_funcs = []
@@ -64,6 +68,9 @@ class AbstractBaseLearner():
 
             func(epoch) -> None
     """
+    def half(self):
+        self.fp16_mode = True
+
     def add_on_epoch_start(self,func):
         self.epoch_start_funcs.append(func)
 
@@ -1071,12 +1078,12 @@ class StandardLearner(BaseLearner):
                    """
     def train(self, train_loader, loss_fn, optimizer, train_metrics, test_loader=None, test_metrics=None, val_loader=None,val_metrics=None, num_epochs=10,lr_scheduler=None,
               save_models="all", model_dir=os.getcwd(),save_model_interval=1,display_metrics=False, save_metrics=False, notebook_mode=False, batch_log=True, save_logs=None,
-              visdom_log=None,tensorboard_log=None, save_architecture=False,clip_grads=None,fp16_mode=False):
+              visdom_log=None,tensorboard_log=None, save_architecture=False,clip_grads=None):
 
         self.optimizer = optimizer
         self.loss_fn = loss_fn
         self.clip_grads = clip_grads
-        self.fp16_mode = fp16_mode
+        
         super().__train_loop__(train_loader, train_metrics, test_loader, test_metrics, val_loader,val_metrics, num_epochs,lr_scheduler,
               save_models, model_dir,save_model_interval,display_metrics, save_metrics, notebook_mode, batch_log, save_logs,
               visdom_log,tensorboard_log, save_architecture)
@@ -1246,6 +1253,7 @@ class TextClassifier(BaseTextLearner):
         self.optimizer = optimizer
         self.loss_fn = loss_fn
         self.clip_grads = clip_grads
+        
         super().__train_loop__(train_loader, train_metrics, test_loader, test_metrics, val_loader,val_metrics, num_epochs,lr_scheduler,
               save_models, model_dir,save_model_interval,display_metrics, save_metrics, notebook_mode, batch_log, save_logs,
               visdom_log,tensorboard_log, save_architecture)
@@ -1275,7 +1283,10 @@ class TextClassifier(BaseTextLearner):
 
         outputs = self.model(train_x)
         loss = self.loss_fn(outputs, train_y)
-        loss.backward()
+        if self.fp16_mode:
+            self.optimizer.backward(loss)
+        else:
+            loss.backward()
 
         self.optimizer.step()
         self.train_running_loss = self.train_running_loss + (loss.cpu().item() * batch_size)

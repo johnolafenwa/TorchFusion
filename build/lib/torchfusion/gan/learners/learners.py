@@ -662,7 +662,10 @@ class StandardBaseGanLearner(BaseGanCore):
             gen_outputs = self.disc_model(generated.detach())
 
         loss = self.__update_discriminator_loss__(x,generated,outputs,gen_outputs)
-        loss.backward()
+        if self.fp16_mode:
+            self.disc_optimizer.backward(loss)
+        else:
+            loss.backward()
         self.disc_optimizer.step()
         self.disc_running_loss = self.disc_running_loss + (loss.cpu().item() * batch_size)
 
@@ -721,7 +724,11 @@ class StandardBaseGanLearner(BaseGanCore):
 
 
         loss = self.__update_generator_loss__(x,fake_images,real_outputs,outputs)
-        loss.backward()
+
+        if self.fp16_mode:
+            self.gen_optimizer.backward(loss)
+        else:
+            loss.backward()
 
         self.gen_optimizer.step()
         self.gen_running_loss = self.gen_running_loss + (loss.cpu().item() * batch_size)
@@ -1259,7 +1266,10 @@ class WGanLearner(BaseGanCore):
         gradient_penalty = self.lambda_ * ((gradients.view(gradients.size(0), -1).norm(2, 1) - 1) ** 2).mean()
 
         loss = gen_loss + real_loss + gradient_penalty
-        loss.backward()
+        if self.fp16_mode:
+            self.disc_optimizer.backward(loss)
+        else:
+            loss.backward()
         self.disc_optimizer.step()
         self.disc_running_loss = self.disc_running_loss + (loss.cpu().item() * batch_size)
 
@@ -1309,7 +1319,11 @@ class WGanLearner(BaseGanCore):
 
 
         loss = -torch.mean(outputs)
-        loss.backward()
+
+        if self.fp16_mode:
+            self.gen_optimizer.backward(loss)
+        else:
+            loss.backward()
 
         self.gen_optimizer.step()
 
