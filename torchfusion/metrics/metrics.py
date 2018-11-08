@@ -159,14 +159,16 @@ class MeanConfidenceScore(Metric):
     
 """
 class MSE(Metric):
-    def __init__(self,name):
+    def __init__(self,name="MSE"):
         """
 
         :param name:
         """
         super(MSE,self).__init__(name)
 
-    def compute(self,prediction,label):
+    def __compute__(self,prediction,label):
+
+        
         """
 
         :param prediction:
@@ -188,14 +190,14 @@ class MSE(Metric):
         return sum
 
 class MAE(Metric):
-    def __init__(self,name):
+    def __init__(self,name="MAE"):
         """
 
         :param name:
         """
         super(MAE,self).__init__(name)
 
-    def compute(self,prediction,label):
+    def __compute__(self,prediction,label):
         """
 
         :param prediction:
