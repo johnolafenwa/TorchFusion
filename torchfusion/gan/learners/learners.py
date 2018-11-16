@@ -472,6 +472,8 @@ class BaseGanCore(BaseGanLearner):
                     class_labels = class_labels.cuda()
 
                 outputs = self.gen_model(self.fixed_source, class_labels)
+                if self.fp16_mode:
+                    outputs = outputs.float()
 
                 images_file = os.path.join(class_path, "iteration{}.png".format(iteration))
 
@@ -487,6 +489,8 @@ class BaseGanCore(BaseGanLearner):
 
         else:
             outputs = self.gen_model(self.fixed_source)
+            if self.fp16_mode:
+                outputs = outputs.float()
             images_file = os.path.join(save_dir, "image_{}.png".format(iteration))
 
             images = vutils.make_grid(outputs.cpu().data, normalize=True)
@@ -511,6 +515,9 @@ class BaseGanCore(BaseGanLearner):
                 
                 outputs = self.gen_model(self.fixed_source, class_labels)
 
+                if self.fp16_mode:
+                    outputs = outputs.float()
+
                 images = vutils.make_grid(outputs.cpu().data, normalize=True)
                 images = np.transpose(images.numpy(), (1, 2, 0))
                 plt.subplot(self.classes, 1, i + 1)
@@ -522,6 +529,8 @@ class BaseGanCore(BaseGanLearner):
 
         else:
             outputs = self.gen_model(self.fixed_source)
+            if self.fp16_mode:
+                outputs = outputs.float()
 
             images = vutils.make_grid(outputs.cpu().data, normalize=True)
 

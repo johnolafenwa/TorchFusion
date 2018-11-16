@@ -25,8 +25,9 @@ class tofp16(nn.Module):
     def __init__(self):
         super(tofp16, self).__init__()
 
-    def forward(self, input):
-        return input.half()
+    def forward(self, *inputs):
+        
+        return (input.half() for input in inputs)
 
 
 def BN_convert_float(module):
@@ -50,7 +51,7 @@ def network_to_half(network):
     Convert model to half precision in a batchnorm-safe way.
     """
    
-    return nn.Sequential(tofp16(), BN_convert_float(network.half()))
+    return Sequential2(tofp16(), BN_convert_float(network.half()))
 
 
 def backwards_debug_hook(grad):
