@@ -26,10 +26,13 @@ class ConditionalBatchNorm2d(nn.Module):
         self.beta_embed.weight.data = torch.zeros(self.gamma_embed.weight.size())
 
     def forward(self, input, class_id):
+        input = input.float()
+        class_id = class_id.long()
         out = self.bn(input)
-        gamma = self.gamma_embed(class_id.long()).squeeze(1).unsqueeze(2).unsqueeze(3)
-        beta = self.beta_embed(class_id.long()).squeeze(1).unsqueeze(2).unsqueeze(3)
-        out = gamma * out + beta
+        gamma = self.gamma_embed(class_id).squeeze(1).unsqueeze(2).unsqueeze(3)
+        beta = self.beta_embed(class_id).squeeze(1).unsqueeze(2).unsqueeze(3)
+        out = gamma * out.half() + beta
+
 
         return out
 

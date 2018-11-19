@@ -2,17 +2,8 @@ import torch
 import torch.nn as nn
 from torch.autograd import Variable
 from torch._utils import _flatten_dense_tensors, _unflatten_dense_tensors
-
-
-class Sequential2(nn.Sequential):
-    def __init__(self, *args):
-        super(Sequential2, self).__init__(*args)
-
-    def forward(self, *input):
-        for module in self._modules.values():
-            input = module(*input)
-        return input
-
+from ..gan.layers import ConditionalBatchNorm2d
+from ..layers import MultiSequential
 
 class tofp16(nn.Module):
     """
@@ -46,12 +37,12 @@ def BN_convert_float(module):
     return module
 
 
-def network_to_half(network):
+def half_model(model):
     """
     Convert model to half precision in a batchnorm-safe way.
     """
    
-    return Sequential2(tofp16(), BN_convert_float(network.half()))
+    return MultiSequential(tofp16(), BN_convert_float(model.half()))
 
 
 def backwards_debug_hook(grad):

@@ -6,6 +6,15 @@ from torch.nn.modules.conv import _ConvNd,_ConvTransposeMixin,_single,_pair,_tri
 from torch.nn.modules.batchnorm import _BatchNorm
 
 
+class MultiSequential(nn.Sequential):
+    def __init__(self, *args):
+        super(MultiSequential, self).__init__(*args)
+
+    def forward(self, *input):
+        for module in self._modules.values():
+            input = module(*input)
+        return input
+
 class ConvNd(_ConvNd):
     def __init__(self,in_channels,out_channels,kernel_size,stride,padding,dilation,groups,bias,out_padding,weight_init=Kaiming_Normal(),bias_init=Zeros()):
         """
