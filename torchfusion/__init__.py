@@ -8,7 +8,7 @@ from .utils import *
 from .transforms import *
 from .fp16_utils import *
 
-__version__ = "0.3.2"
+__version__ = "0.3.3"
 
 __all__ = ["learners","datasets","metrics","layers","initializers","utils","transforms","fp16_utils"]
 
