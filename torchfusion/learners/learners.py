@@ -13,6 +13,7 @@ from ..utils import PlotInput, visualize, get_model_summary,get_batch_size,clip_
 from tensorboardX import SummaryWriter
 from torch.optim.lr_scheduler import ReduceLROnPlateau
 import torch.onnx as onnx
+import torch.backends.cudnn as cudnn
 
 r"""Abstract base Model for training, evaluating and performing inference
 All custom models should subclass this and implement train, evaluate and predict functions
@@ -25,9 +26,12 @@ All custom models should subclass this and implement train, evaluate and predict
 
 class AbstractBaseLearner():
     def __init__(self, use_cuda_if_available=True):
+
         self.cuda = False
+        self.fp16_mode = False
         if use_cuda_if_available and cuda.is_available():
             self.cuda = True
+            cudnn.benchmark = True
 
         self.epoch_start_funcs = []
         self.batch_start_funcs = []
@@ -64,6 +68,9 @@ class AbstractBaseLearner():
 
             func(epoch) -> None
     """
+    def half(self):
+        self.fp16_mode = True
+
     def add_on_epoch_start(self,func):
         self.epoch_start_funcs.append(func)
 
@@ -1076,6 +1083,7 @@ class StandardLearner(BaseLearner):
         self.optimizer = optimizer
         self.loss_fn = loss_fn
         self.clip_grads = clip_grads
+        
         super().__train_loop__(train_loader, train_metrics, test_loader, test_metrics, val_loader,val_metrics, num_epochs,lr_scheduler,
               save_models, model_dir,save_model_interval,display_metrics, save_metrics, notebook_mode, batch_log, save_logs,
               visdom_log,tensorboard_log, save_architecture)
@@ -1104,7 +1112,10 @@ class StandardLearner(BaseLearner):
 
         outputs = self.model(train_x)
         loss = self.loss_fn(outputs, train_y)
-        loss.backward()
+        if self.fp16_mode:
+            self.optimizer.backward(loss)
+        else:
+            loss.backward()
 
         self.optimizer.step()
         self.train_running_loss = self.train_running_loss + (loss.cpu().item() * batch_size)
@@ -1242,6 +1253,7 @@ class TextClassifier(BaseTextLearner):
         self.optimizer = optimizer
         self.loss_fn = loss_fn
         self.clip_grads = clip_grads
+        
         super().__train_loop__(train_loader, train_metrics, test_loader, test_metrics, val_loader,val_metrics, num_epochs,lr_scheduler,
               save_models, model_dir,save_model_interval,display_metrics, save_metrics, notebook_mode, batch_log, save_logs,
               visdom_log,tensorboard_log, save_architecture)
@@ -1271,7 +1283,10 @@ class TextClassifier(BaseTextLearner):
 
         outputs = self.model(train_x)
         loss = self.loss_fn(outputs, train_y)
-        loss.backward()
+        if self.fp16_mode:
+            self.optimizer.backward(loss)
+        else:
+            loss.backward()
 
         self.optimizer.step()
         self.train_running_loss = self.train_running_loss + (loss.cpu().item() * batch_size)
@@ -1316,7 +1331,7 @@ class TextClassifier(BaseTextLearner):
         outputs = self.model(val_x)
 
         for metric in self.val_metrics:
-            metric.update(outputs.cpu().data, val_y.cpu().data,self.batch_first)
+            metric.update(outputs.cpu().data , val_y.cpu().data,self.batch_first)
 
     def __predict_func__(self, inputs):
         if isinstance(inputs, list) or isinstance(inputs, tuple):
