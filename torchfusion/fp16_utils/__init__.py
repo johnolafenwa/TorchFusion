@@ -1,6 +1,7 @@
+from .fp16util import BN_convert_float, half_model, prep_param_lists, master_params_to_model_params, master_params_to_model_params, tofp16 , to_python_float, clip_grad_norm
 from .fp16util import (
     BN_convert_float,
-    network_to_half,
+    half_model,
     prep_param_lists,
     model_grads_to_master_grads,
     master_params_to_model_params, 
@@ -8,9 +9,6 @@ from .fp16util import (
     to_python_float,
     clip_grad_norm,
 )
-
-
-from .fused_weight_norm import Fused_Weight_Norm
 
 
 from .fp16_optimizer import FP16_Optimizer

@@ -11,6 +11,8 @@ import tarfile
 from zipfile import ZipFile
 import requests
 import shutil
+from ..layers import MultiSequential
+from ..fp16_utils import tofp16
 
 
 def download_file(url,path,extract_path=None):
@@ -190,7 +192,7 @@ def get_model_summary(model,*input_tensors,item_length=26,tensorboard_log=None):
             summary.append(
                 ModuleDetails(name=layer_name, input_size=list(input[0].size()), output_size=list(          output.size()), num_parameters=params, multiply_adds=flops))
 
-        if not isinstance(module, nn.ModuleList) and not isinstance(module, nn.Sequential) and module != model:
+        if not isinstance(module, nn.ModuleList) and not isinstance(module, nn.Sequential) and not(module,tofp16) and not(module,MultiSequential) and module != model:
             hooks.append(module.register_forward_hook(hook))
 
     model.apply(add_hooks)
@@ -332,7 +334,7 @@ def load_image(file,grayscale=False,target_size=None,to_tensor=True,mean=None,st
         target_ = target_size
         if isinstance(target_size,int):
             target_ = (target_size,target_size)
-        transformations.append(transforms.Resize(target_,interpolation))
+        transformations.append(transforms.CenterCrop(target_))
 
     if to_tensor:
         transformations.append(transforms.ToTensor())

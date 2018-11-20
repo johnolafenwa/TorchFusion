@@ -2,7 +2,6 @@ import torch
 import torch.nn as nn
 from torch.autograd import Variable
 from torch._utils import _flatten_dense_tensors, _unflatten_dense_tensors
-from ..gan.layers import ConditionalBatchNorm2d
 from ..layers import MultiSequential
 
 class tofp16(nn.Module):
