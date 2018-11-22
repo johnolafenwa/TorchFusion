@@ -31,7 +31,8 @@ class ConditionalBatchNorm2d(nn.Module):
         out = self.bn(input)
         gamma = self.gamma_embed(class_id).squeeze(1).unsqueeze(2).unsqueeze(3)
         beta = self.beta_embed(class_id).squeeze(1).unsqueeze(2).unsqueeze(3)
-        out = gamma * out.half() + beta
+
+        out = gamma * out.type(gamma.dtype) + beta
 
 
         return out

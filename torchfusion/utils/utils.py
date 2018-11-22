@@ -192,7 +192,7 @@ def get_model_summary(model,*input_tensors,item_length=26,tensorboard_log=None):
             summary.append(
                 ModuleDetails(name=layer_name, input_size=list(input[0].size()), output_size=list(          output.size()), num_parameters=params, multiply_adds=flops))
 
-        if not isinstance(module, nn.ModuleList) and not isinstance(module, nn.Sequential) and not(module,tofp16) and not(module,MultiSequential) and module != model:
+        if not isinstance(module, nn.ModuleList) and not isinstance(module, nn.Sequential) and not isinstance(module,tofp16)  and module != model:
             hooks.append(module.register_forward_hook(hook))
 
     model.apply(add_hooks)
@@ -310,7 +310,7 @@ def load_model(model,path):
         model.load_state_dict(copy)
 
 
-def load_image(file,grayscale=False,target_size=None,to_tensor=True,mean=None,std=None,interpolation = Image.BILINEAR):
+def load_image(file,grayscale=False,target_size=None,to_tensor=True,mean=0.5,std=0.5,interpolation = Image.BILINEAR):
 
     """
 
