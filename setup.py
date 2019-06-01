@@ -1,7 +1,7 @@
 from setuptools import setup,find_packages
 
 setup(name="torchfusion",
-      version='0.3.3',
+      version='0.3.4',
       description='A modern deep learning framework built to accelerate research and development of AI systems',
       url="https://github.com/johnolafenwa/TorchFusion",
       author='John Olafenwa and Moses Olafenwa',

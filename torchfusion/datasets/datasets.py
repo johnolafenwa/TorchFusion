@@ -11,10 +11,49 @@ import torchvision.transforms.transforms as transformations
 import numpy as np
 import torch
 from torchvision.datasets import *
-from torchvision.datasets.folder import default_loader,find_classes,make_dataset
+from torchvision.datasets.folder import default_loader
 from torch.utils.data import DataLoader
 from torch.autograd import Variable
 import random
+
+
+def make_dataset(dir, class_to_idx, extensions):
+    images = []
+    dir = os.path.expanduser(dir)
+    for target in sorted(class_to_idx.keys()):
+        d = os.path.join(dir, target)
+        if not os.path.isdir(d):
+            continue
+
+        for root, _, fnames in sorted(os.walk(d)):
+            for fname in sorted(fnames):
+                if has_file_allowed_extension(fname, extensions):
+                    path = os.path.join(root, fname)
+                    item = (path, class_to_idx[target])
+                    images.append(item)
+
+    return images
+
+def find_classes(self, dir):
+        """
+        Finds the class folders in a dataset.
+        Args:
+            dir (string): Root directory path.
+        Returns:
+            tuple: (classes, class_to_idx) where classes are relative to (dir), and class_to_idx is a dictionary.
+        Ensures:
+            No class is a subdirectory of another.
+        """
+        if sys.version_info >= (3, 5):
+            # Faster and available in Python 3.5 and above
+            classes = [d.name for d in os.scandir(dir) if d.is_dir()]
+        else:
+            classes = [d for d in os.listdir(dir) if os.path.isdir(os.path.join(dir, d))]
+        classes.sort()
+        class_to_idx = {classes[i]: i for i in range(len(classes))}
+        return classes, class_to_idx
+
+
 
 def download_file(url,path,extract_path=None):
     """
