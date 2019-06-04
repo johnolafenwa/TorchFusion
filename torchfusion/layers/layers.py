@@ -38,30 +38,6 @@ class ConvNd(_ConvNd):
         if bias and bias_init is not None:
             bias_init(self.bias.data)
 
-class ConvTransposeNd(_ConvTransposeMixin,_ConvNd):
-    def __init__(self, in_channels, out_channels, kernel_size, stride, padding, dilation, groups, bias,out_padding,
-                 weight_init=Kaiming_Normal(), bias_init=Zeros()):
-        """
-
-        :param in_channels:
-        :param out_channels:
-        :param kernel_size:
-        :param stride:
-        :param padding:
-        :param dilation:
-        :param groups:
-        :param bias:
-        :param out_padding:
-        :param weight_init:
-        :param bias_init:
-        """
-        super(ConvTransposeNd, self).__init__(in_channels, out_channels, kernel_size, stride, padding,
-                                     dilation, True, out_padding, groups, bias)
-        if weight_init is not None:
-            weight_init(self.weight.data)
-        if bias and bias_init is not None:
-            bias_init(self.bias.data)
-
 
 class Conv2d(ConvNd):
     def __init__(self,in_channels,out_channels,kernel_size,stride=1,padding=0,dilation=1,groups=1,bias=True,weight_init=Kaiming_Normal(),bias_init=Zeros()):
@@ -85,28 +61,6 @@ class Conv2d(ConvNd):
         return F.conv2d(input,self.weight,self.bias,self.stride,self.padding,self.dilation,self.groups)
 
 
-class ConvTranspose2d(ConvTransposeNd):
-    def __init__(self,in_channels,out_channels,kernel_size,stride=1,padding=0,out_padding=0,dilation=1,groups=1,bias=True,weight_init=Kaiming_Normal(),bias_init=Zeros()):
-        """
-
-        :param in_channels:
-        :param out_channels:
-        :param kernel_size:
-        :param stride:
-        :param padding:
-        :param dilation:
-        :param groups:
-        :param bias:
-        :param weight_init:
-        :param bias_init:
-        """
-        super(ConvTranspose2d,self).__init__(in_channels,out_channels,_pair(kernel_size),_pair(stride),_pair(padding),_pair(dilation),groups,bias,_pair(out_padding),weight_init,bias_init)
-
-    def forward(self,input,output_size=None):
-        output_padding = self._output_padding(input, output_size)
-        return F.conv_transpose2d(input,self.weight,self.bias,self.stride,self.padding,output_padding,self.groups,self.dilation)
-
-
 
 class Conv1d(ConvNd):
     def __init__(self,in_channels,out_channels,kernel_size,stride=1,padding=0,dilation=1,groups=1,bias=True,weight_init=Kaiming_Normal(),bias_init=Zeros()):
@@ -125,33 +79,44 @@ class Conv1d(ConvNd):
         """
         super(Conv1d,self).__init__(in_channels,out_channels,_single(kernel_size),_single(stride),_single(padding),_single(dilation),groups,bias,_single(0),weight_init,bias_init)
 
-
     def forward(self,input):
 
         return F.conv1d(input,self.weight,self.bias,self.stride,self.padding,self.dilation,self.groups)
 
 
-class ConvTranspose1d(ConvTransposeNd):
-    def __init__(self,in_channels,out_channels,kernel_size,stride=1,padding=0,out_padding=0,dilation=1,groups=1,bias=True,weight_init=Kaiming_Normal(),bias_init=Zeros()):
-        """
+class ConvTranspose1d(nn.ConvTranspose1d):
+    def __init__(self,in_channels, out_channels, kernel_size, stride=1, padding=0, output_padding=0, groups=1, bias=True, dilation=1,weight_init=Kaiming_Normal(), bias_init=Zeros()):
 
-        :param in_channels:
-        :param out_channels:
-        :param kernel_size:
-        :param stride:
-        :param padding:
-        :param dilation:
-        :param groups:
-        :param bias:
-        :param weight_init:
-        :param bias_init:
-        """
-        super(ConvTranspose1d,self).__init__(in_channels,out_channels,_single(kernel_size),_single(stride),_single(padding),_single(dilation),groups,bias,_single(out_padding),weight_init,bias_init)
+        super(ConvTranspose1d,self).__init__(in_channels, out_channels, kernel_size, stride,
+                 padding, output_padding, groups, bias, dilation)
 
+        if weight_init is not None:
+            weight_init(self.weight.data)
+        if bias and bias_init is not None:
+            bias_init(self.bias.data)
 
-    def forward(self,input,output_size=None):
-        output_padding = self._output_padding(input, output_size)
-        return F.conv_transpose1d(input,self.weight,self.bias,self.stride,self.padding,output_padding,self.dilation,self.groups)
+class ConvTranspose2d(nn.ConvTranspose2d):
+    def __init__(self,in_channels, out_channels, kernel_size, stride=1,padding=0, output_padding=0, groups=1, bias=True, dilation=1,weight_init=Kaiming_Normal(), bias_init=Zeros()):
+
+        super(ConvTranspose2d,self).__init__(in_channels, out_channels, kernel_size, stride,
+                 padding, output_padding, groups, bias, dilation)
+
+        if weight_init is not None:
+            weight_init(self.weight.data)
+        if bias and bias_init is not None:
+            bias_init(self.bias.data)
+
+class ConvTranspose3d(nn.ConvTranspose3d):
+    def __init__(self,in_channels, out_channels, kernel_size, stride=1, padding=0, output_padding=0, groups=1, bias=True, dilation=1,weight_init=Kaiming_Normal(), bias_init=Zeros()):
+
+        super(ConvTranspose3d,self).__init__(in_channels, out_channels, kernel_size, stride,
+                 padding, output_padding, groups, bias, dilation)
+
+        if weight_init is not None:
+            weight_init(self.weight.data)
+        if bias and bias_init is not None:
+            bias_init(self.bias.data)
+
 
 
 class Conv3d(ConvNd):
@@ -176,30 +141,6 @@ class Conv3d(ConvNd):
         return F.conv3d(input,self.weight,self.bias,self.stride,self.padding,self.dilation,self.groups)
 
 
-class ConvTranspose3d(ConvTransposeNd):
-    def __init__(self,in_channels,out_channels,kernel_size,stride=1,padding=0,out_padding=0,dilation=1,groups=1,bias=True,weight_init=Kaiming_Normal(),bias_init=Zeros()):
-        """
-
-        :param in_channels:
-        :param out_channels:
-        :param kernel_size:
-        :param stride:
-        :param padding:
-        :param dilation:
-        :param groups:
-        :param bias:
-        :param weight_init:
-        :param bias_init:
-        """
-        super(ConvTranspose3d,self).__init__(in_channels,out_channels,_triple(kernel_size),_triple(stride),_triple(padding),_triple(dilation),groups,bias,_triple(out_padding),weight_init,bias_init)
-
-
-    def forward(self,input,output_size=None):
-        output_padding = self._output_padding(input, output_size)
-        return F.conv_transpose3d(input,self.weight,self.bias,self.stride,self.padding,output_padding,self.dilation,self.groups)
-
-
-
 class DepthwiseConv2d(ConvNd):
     def __init__(self,in_channels,kernel_size,stride=1,padding=0,dilation=1,bias=True,multiplier=1,weight_init=Kaiming_Normal(),bias_init=Zeros()):
         """
@@ -219,27 +160,6 @@ class DepthwiseConv2d(ConvNd):
 
     def forward(self,input):
         return F.conv2d(input,self.weight,self.bias,self.stride,self.padding,self.dilation,self.groups)
-
-class DepthwiseConvTranspose2d(ConvTransposeNd):
-    def __init__(self,in_channels,kernel_size,stride=1,padding=0,out_padding=0,dilation=1,bias=True,multiplier=1,weight_init=Kaiming_Normal(),bias_init=Zeros()):
-        """
-
-        :param in_channels:
-        :param kernel_size:
-        :param stride:
-        :param padding:
-        :param dilation:
-        :param bias:
-        :param multiplier:
-        :param weight_init:
-        :param bias_init:
-        """
-        super(DepthwiseConvTranspose2d,self).__init__(in_channels,in_channels * multiplier,_pair(kernel_size),_pair(stride),_pair(padding),_pair(dilation),in_channels,bias,_pair(out_padding),weight_init,bias_init)
-
-
-    def forward(self,input,output_size=None):
-        output_padding = self._output_padding(input, output_size)
-        return F.conv_transpose2d(input,self.weight,self.bias,self.stride,self.padding,output_padding,self.dilation,self.groups)
 
 class DepthwiseConv1d(ConvNd):
     def __init__(self,in_channels,kernel_size,stride=1,padding=0,dilation=1,bias=True,multiplier=1,weight_init=Kaiming_Normal(),bias_init=Zeros()):
@@ -261,26 +181,38 @@ class DepthwiseConv1d(ConvNd):
     def forward(self,input):
         return F.conv1d(input,self.weight,self.bias,self.stride,self.padding,self.dilation,self.groups)
 
-class DepthwiseConvTranspose1d(ConvTransposeNd):
-    def __init__(self,in_channels,kernel_size,stride=1,padding=0,out_padding=0,dilation=1,bias=True,multiplier=1,weight_init=Kaiming_Normal(),bias_init=Zeros()):
-        """
+class DepthwiseConvTranspose1d(nn.ConvTranspose1d):
+    def __init__(self,in_channels, kernel_size, stride=1, padding=0, output_padding=0, groups=1, bias=True, dilation=1,multiplier=1,weight_init=Kaiming_Normal(), bias_init=Zeros()):
 
-        :param in_channels:
-        :param kernel_size:
-        :param stride:
-        :param padding:
-        :param dilation:
-        :param bias:
-        :param multiplier:
-        :param weight_init:
-        :param bias_init:
-        """
-        super(DepthwiseConvTranspose1d,self).__init__(in_channels,in_channels*multiplier,_single(kernel_size),_single(stride),_single(padding),_single(dilation),in_channels,bias,_single(out_padding),weight_init,bias_init)
+        super(DepthwiseConvTranspose1d,self).__init__(in_channels, in_channels*multiplier, kernel_size, stride,
+                 padding, output_padding, in_channels, bias, dilation)
 
+        if weight_init is not None:
+            weight_init(self.weight.data)
+        if bias and bias_init is not None:
+            bias_init(self.bias.data)
 
-    def forward(self,input,output_size=None):
-        output_padding = self._output_padding(input, output_size)
-        return F.conv_transpose1d(input,self.weight,self.bias,self.stride,self.padding,output_padding,self.dilation,self.groups)
+class DepthwiseConvTranspose2d(nn.ConvTranspose2d):
+    def __init__(self,in_channels, kernel_size, stride=1, padding=0, output_padding=0, groups=1, bias=True, dilation=1,multiplier=1,weight_init=Kaiming_Normal(), bias_init=Zeros()):
+
+        super(DepthwiseConvTranspose2d,self).__init__(in_channels, in_channels*multiplier, kernel_size, stride,
+                 padding, output_padding, in_channels, bias, dilation)
+
+        if weight_init is not None:
+            weight_init(self.weight.data)
+        if bias and bias_init is not None:
+            bias_init(self.bias.data)
+
+class DepthwiseConvTranspose3d(nn.ConvTranspose3d):
+    def __init__(self,in_channels, kernel_size, stride=1, padding=0, output_padding=0, groups=1, bias=True, dilation=1,multiplier=1,weight_init=Kaiming_Normal(), bias_init=Zeros()):
+
+        super(DepthwiseConvTranspose3d,self).__init__(in_channels, in_channels*multiplier, kernel_size, stride,
+                 padding, output_padding, in_channels, bias, dilation)
+
+        if weight_init is not None:
+            weight_init(self.weight.data)
+        if bias and bias_init is not None:
+            bias_init(self.bias.data)
 
 class DepthwiseConv3d(ConvNd):
     def __init__(self,in_channels,kernel_size,stride=1,padding=0,dilation=1,bias=True,multiplier=1,weight_init=Kaiming_Normal(),bias_init=Zeros()):
@@ -301,27 +233,6 @@ class DepthwiseConv3d(ConvNd):
 
     def forward(self,input):
         return F.conv3d(input,self.weight,self.bias,self.stride,self.padding,self.dilation,self.groups)
-
-class DepthwiseConvTranspose3d(ConvTransposeNd):
-    def __init__(self,in_channels,kernel_size,stride=1,padding=0,out_padding=0,dilation=1,bias=True,multiplier=1,weight_init=Kaiming_Normal(),bias_init=Zeros()):
-        """
-
-        :param in_channels:
-        :param kernel_size:
-        :param stride:
-        :param padding:
-        :param dilation:
-        :param bias:
-        :param multiplier:
-        :param weight_init:
-        :param bias_init:
-        """
-        super(DepthwiseConvTranspose3d,self).__init__(in_channels,in_channels*multiplier,_triple(kernel_size),_triple(stride),_triple(padding),_triple(dilation),in_channels,bias,_triple(out_padding),weight_init,bias_init)
-
-
-    def forward(self,input,output_size=None):
-        output_padding = self._output_padding(input, output_size)
-        return F.conv_transpose3d(input,self.weight,self.bias,self.stride,self.padding,output_padding,self.dilation,self.groups)
 
 class Linear(nn.Linear):
     def __init__(self,in_features,out_features,bias=True,weight_init=Xavier_Normal(),bias_init=Zeros()):
