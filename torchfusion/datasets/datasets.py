@@ -15,6 +15,7 @@ from torchvision.datasets.folder import default_loader
 from torch.utils.data import DataLoader
 from torch.autograd import Variable
 import random
+import sys
 
 
 def make_dataset(dir, class_to_idx, extensions):
@@ -34,24 +35,30 @@ def make_dataset(dir, class_to_idx, extensions):
 
     return images
 
-def find_classes(self, dir):
-        """
-        Finds the class folders in a dataset.
-        Args:
-            dir (string): Root directory path.
-        Returns:
-            tuple: (classes, class_to_idx) where classes are relative to (dir), and class_to_idx is a dictionary.
-        Ensures:
-            No class is a subdirectory of another.
-        """
-        if sys.version_info >= (3, 5):
-            # Faster and available in Python 3.5 and above
-            classes = [d.name for d in os.scandir(dir) if d.is_dir()]
-        else:
-            classes = [d for d in os.listdir(dir) if os.path.isdir(os.path.join(dir, d))]
-        classes.sort()
-        class_to_idx = {classes[i]: i for i in range(len(classes))}
-        return classes, class_to_idx
+
+def has_file_allowed_extension(fname, extensions):
+    ext = os.path.splitext(fname)[-1]
+    return True if ext.lower() in extensions else False
+
+
+def find_classes(dir):
+    """
+    Finds the class folders in a dataset.
+    Args:
+        dir (string): Root directory path.
+    Returns:
+        tuple: (classes, class_to_idx) where classes are relative to (dir), and class_to_idx is a dictionary.
+    Ensures:
+        No class is a subdirectory of another.
+    """
+    if sys.version_info >= (3, 5):
+        # Faster and available in Python 3.5 and above
+        classes = [d.name for d in os.scandir(dir) if d.is_dir()]
+    else:
+        classes = [d for d in os.listdir(dir) if os.path.isdir(os.path.join(dir, d))]
+    classes.sort()
+    class_to_idx = {classes[i]: i for i in range(len(classes))}
+    return classes, class_to_idx
 
 
 
